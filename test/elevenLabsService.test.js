@@ -19,6 +19,11 @@ describe('ElevenLabsService', () => {
     it('should have a voice ID', () => {
       assert.ok(service.voiceId);
     });
+
+    it('should have a default model ID', () => {
+      assert.ok(service.modelId);
+      assert.strictEqual(service.modelId, 'eleven_monolingual_v1');
+    });
   });
 
   describe('textToSpeech', () => {

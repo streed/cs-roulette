@@ -1,9 +1,6 @@
 const { describe, it, beforeEach } = require('node:test');
 const assert = require('node:assert');
 
-// Mock axios before requiring the service
-const originalAxios = require('axios');
-
 describe('OllamaService', () => {
   let OllamaService;
   let service;

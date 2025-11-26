@@ -20,6 +20,7 @@ describe('Config', () => {
       assert.ok(config.elevenlabs);
       assert.ok('apiKey' in config.elevenlabs);
       assert.ok('voiceId' in config.elevenlabs);
+      assert.ok('modelId' in config.elevenlabs);
     });
 
     it('should have ollama configuration', () => {

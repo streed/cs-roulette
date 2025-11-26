@@ -80,13 +80,24 @@ describe('WakeWordDetector', () => {
 
   describe('stopAll', () => {
     it('should clear all listening streams', () => {
-      // Manually add some entries to test
+      // Manually add some entries to test via internal state for setup
+      // This is acceptable for test setup as we need to simulate state
       detector.listeningStreams.set('user1', { audioStream: { destroy: () => {} }, decodedStream: { destroy: () => {} } });
       detector.listeningStreams.set('user2', { audioStream: { destroy: () => {} }, decodedStream: { destroy: () => {} } });
       
+      // Verify initial state using public method
+      assert.strictEqual(detector.getActiveListenerCount(), 2);
+      
       detector.stopAll();
       
-      assert.strictEqual(detector.listeningStreams.size, 0);
+      // Verify using public method
+      assert.strictEqual(detector.getActiveListenerCount(), 0);
+    });
+  });
+
+  describe('getActiveListenerCount', () => {
+    it('should return 0 when no listeners are active', () => {
+      assert.strictEqual(detector.getActiveListenerCount(), 0);
     });
   });
 });

@@ -2,6 +2,13 @@ const { EndBehaviorType } = require('@discordjs/voice');
 const prism = require('prism-media');
 const config = require('../config');
 
+// Audio configuration constants
+const SAMPLE_RATE = 48000;
+const CHANNELS = 2;
+const BYTES_PER_SAMPLE = 2;
+const BUFFER_DURATION_SECONDS = 1;
+const VOICE_ACTIVITY_THRESHOLD = 0.02;
+
 /**
  * Service for detecting the wake word in voice audio
  * Uses simple audio activity detection as a trigger mechanism
@@ -38,8 +45,8 @@ class WakeWordDetector {
 
       // Create an Opus decoder
       const opusDecoder = new prism.opus.Decoder({
-        rate: 48000,
-        channels: 2,
+        rate: SAMPLE_RATE,
+        channels: CHANNELS,
         frameSize: 960,
       });
 
@@ -48,13 +55,14 @@ class WakeWordDetector {
 
       // Buffer to store audio samples
       let audioBuffer = Buffer.alloc(0);
+      const bufferThreshold = SAMPLE_RATE * CHANNELS * BYTES_PER_SAMPLE * BUFFER_DURATION_SECONDS;
 
       decodedStream.on('data', (chunk) => {
         audioBuffer = Buffer.concat([audioBuffer, chunk]);
         
         // Simple voice activity detection
         // Check if there's significant audio activity
-        if (audioBuffer.length > 48000 * 2 * 2) { // ~1 second of audio
+        if (audioBuffer.length > bufferThreshold) {
           const hasActivity = this.detectVoiceActivity(audioBuffer);
           if (hasActivity && !this.cooldown) {
             this.triggerWakeWord();
@@ -104,6 +112,14 @@ class WakeWordDetector {
   }
 
   /**
+   * Get the number of active listening streams
+   * @returns {number} The count of active listeners
+   */
+  getActiveListenerCount() {
+    return this.listeningStreams.size;
+  }
+
+  /**
    * Simple voice activity detection
    * @param {Buffer} audioBuffer - The audio buffer to analyze
    * @returns {boolean} True if voice activity is detected
@@ -120,8 +136,8 @@ class WakeWordDetector {
     
     const rms = Math.sqrt(sumSquares / samples.length);
     
-    // Threshold for voice activity (adjust as needed)
-    return rms > 0.02;
+    // Threshold for voice activity
+    return rms > VOICE_ACTIVITY_THRESHOLD;
   }
 
   /**

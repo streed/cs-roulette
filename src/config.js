@@ -8,6 +8,7 @@ module.exports = {
   elevenlabs: {
     apiKey: process.env.ELEVENLABS_API_KEY,
     voiceId: process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL', // Default to "Sarah" voice
+    modelId: process.env.ELEVENLABS_MODEL_ID, // Optional, defaults to 'eleven_monolingual_v1'
   },
   ollama: {
     host: process.env.OLLAMA_HOST || 'http://localhost:11434',

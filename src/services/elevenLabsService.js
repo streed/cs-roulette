@@ -1,6 +1,9 @@
 const axios = require('axios');
 const config = require('../config');
 
+// ElevenLabs model configuration
+const DEFAULT_MODEL_ID = 'eleven_monolingual_v1';
+
 /**
  * Service for interacting with ElevenLabs API for text-to-speech
  */
@@ -8,6 +11,7 @@ class ElevenLabsService {
   constructor() {
     this.apiKey = config.elevenlabs.apiKey;
     this.voiceId = config.elevenlabs.voiceId;
+    this.modelId = config.elevenlabs.modelId || DEFAULT_MODEL_ID;
     this.baseUrl = 'https://api.elevenlabs.io/v1';
   }
 
@@ -26,7 +30,7 @@ class ElevenLabsService {
         `${this.baseUrl}/text-to-speech/${this.voiceId}`,
         {
           text: text,
-          model_id: 'eleven_monolingual_v1',
+          model_id: this.modelId,
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.75,
